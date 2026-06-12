@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f172a">
+<title>Amphi de choix — Cyber-NUM</title>
+<style>
+  :root{
+    --bg:#f1f5f9; --ink:#0f172a; --muted:#64748b; --faint:#94a3b8;
+    --teal:#14b8a6; --teal-d:#0d9488; --indigo:#4f46e5; --amber:#f59e0b;
+    --red:#dc2626; --card:#fff; --line:#e2e8f0;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    padding-bottom:90px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  header{background:#0f172a;color:#fff;padding:18px 16px 14px}
+  header .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#2dd4bf;font-weight:600}
+  header h1{font-size:20px;margin:4px 0 0;font-weight:700}
+  .tabs{display:flex;gap:8px;margin-top:14px}
+  .tab{flex:1;border:none;border-radius:10px;padding:8px 4px;font-size:12px;font-weight:600;
+    background:#1e293b;color:#cbd5e1;cursor:pointer}
+  .tab small{display:block;font-weight:400;font-size:10px;color:#64748b}
+  .tab.on{background:var(--teal);color:#0f172a}
+  .tab.on small{color:rgba(15,23,42,.7)}
+  .tab.on.reel{background:var(--red);color:#fff}
+  .tab.on.reel small{color:rgba(255,255,255,.8)}
+  .wrap{padding:0 16px}
+  .card{background:var(--card);border-radius:14px;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+  /* candidat en cours */
+  #currentCard{border-radius:0 0 14px 14px;padding:12px 16px}
+  #currentCard.reel{background:#fef2f2;border:1px solid #fecaca;border-top:none}
+  .cur{display:flex;align-items:center;gap:12px}
+  .badge{width:40px;height:40px;border-radius:50%;background:#0f172a;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700}
+  .cur .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--faint)}
+  .cur .nm{font-weight:700;line-height:1.2}
+  .cur .nm span{font-weight:400}
+  .cur .moy{margin-left:auto;color:var(--muted);font-size:14px}
+  .done{text-align:center;font-weight:600;color:#0f766e;padding:4px 0}
+  .bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:10px}
+  .bar i{display:block;height:100%;background:var(--teal);transition:width .25s}
+  #currentCard.reel .bar i{background:var(--red)}
+  /* sections */
+  h2{font-size:11px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);
+    font-weight:600;margin:22px 0 8px;display:flex;align-items:center;gap:6px}
+  .secHead{display:flex;align-items:center;justify-content:space-between;margin:22px 0 8px}
+  .secHead h2{margin:0}
+  /* boutons */
+  .btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
+    padding:7px 11px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;color:var(--ink)}
+  .btn:disabled{opacity:.4}
+  .btn.danger{color:var(--red)}
+  .btn.solid-red{background:var(--red);border-color:var(--red);color:#fff}
+  .btn.amber{background:var(--amber);border-color:var(--amber);color:#fff}
+  /* vœux */
+  .hint{font-size:11px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;
+    border-radius:10px;padding:8px 12px;margin-bottom:8px}
+  .empty{padding:16px;text-align:center;color:var(--faint);font-size:14px}
+  .vrow{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #f1f5f9}
+  .vrow:last-child{border-bottom:none}
+  .vrow.lost{background:#f8fafc}
+  .vrow.best{background:#ecfdf5}
+  .vnum{width:22px;text-align:right;font-size:12px;color:var(--faint)}
+  .vlab{flex:1;font-size:14px}
+  .vlab b{font-weight:700}
+  .vrow.lost .vlab{text-decoration:line-through;color:var(--faint)}
+  .vtag{font-size:10px;font-weight:700;text-transform:uppercase}
+  .vtag.lost{color:#f87171}
+  .vtag.best{color:#059669}
+  .dots{display:flex;gap:3px}
+  .dot{width:6px;height:6px;border-radius:50%;background:#cbd5e1}
+  .dot.on{background:var(--teal)}
+  .icoBtn{border:none;background:none;padding:5px;color:var(--faint);cursor:pointer;font-size:15px;line-height:1}
+  .icoBtn:disabled{opacity:.25}
+  .warnAll{font-size:11px;color:var(--red);font-weight:600;text-align:center;margin-top:8px}
+  /* tuiles */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .tile{position:relative;border-radius:14px;padding:9px 2px;text-align:center;border:1px solid var(--line);
+    background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.06);cursor:pointer;transition:transform .08s}
+  .tile:active{transform:scale(.95)}
+  .tile .num{font-size:18px;font-weight:700}
+  .tile .nm{display:block;font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
+  .tile .dots{justify-content:center;margin-top:4px}
+  .tile.special{background:var(--indigo);border-color:#4338ca;color:#fff}
+  .tile.special .num{font-size:11px;height:32px;display:flex;align-items:center;justify-content:center;line-height:1.2}
+  .tile.special .dot.on{background:#5eead4}
+  .tile.off{background:#e2e8f0;border-color:#e2e8f0;color:var(--faint);box-shadow:none;cursor:default}
+  .tile.off .nm{color:var(--faint)}
+  .tile.wish{background:#fef3c7;border-color:var(--amber);box-shadow:0 0 0 2px var(--amber);color:#78350f}
+  .tile .heart{position:absolute;top:4px;right:6px;font-size:9px}
+  /* récap */
+  .rrow{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid #f1f5f9}
+  .rrow:last-child{border-bottom:none}
+  .rrow.cur{background:#f0fdfa}
+  .rnum{width:22px;text-align:right;font-size:12px;color:var(--faint)}
+  .rname{flex:1;font-size:14px}
+  .rname b{font-weight:700}
+  .rname span{color:var(--muted)}
+  .pill{font-size:11px;font-weight:700;padding:4px 8px;border-radius:7px;background:#ccfbf1;color:#115e59}
+  .pill.sp{background:#e0e7ff;color:#3730a3}
+  .dash{font-size:12px;color:#cbd5e1;padding-right:6px}
+  footer{text-align:center;font-size:11px;color:var(--faint);margin-top:14px;padding:0 20px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Diplôme technique Cyber-NUM · 2025-2026</div>
+  <h1>Amphi de choix</h1>
+  <div class="tabs" id="tabs"></div>
+</header>
+
+<div class="wrap">
+  <div class="card" id="currentCard"></div>
+
+  <div class="secHead">
+    <h2>♥ Mes vœux (ordre de préférence)</h2>
+    <button class="btn" id="modeBtn"></button>
+  </div>
+  <div id="voeuxHint"></div>
+  <div class="card" id="voeuxList"></div>
+  <div id="voeuxWarn"></div>
+
+  <h2>★ Postes spécifiques</h2>
+  <div class="grid" id="gridSpec"></div>
+
+  <h2>⚲ Départements</h2>
+  <div class="grid" id="gridDept"></div>
+
+  <div class="secHead">
+    <h2 id="recapTitle"></h2>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="undoBtn">↩ Annuler</button>
+      <button class="btn danger" id="resetBtn">⟲ Réinitialiser</button>
+    </div>
+  </div>
+  <div class="card" id="recap"></div>
+
+  <footer>Sauvegarde automatique sur cet appareil (mémoire du navigateur) · Classement arrêté au rang 15 (SALMERON M.)</footer>
+</div>
+
+<script>
+// ─── Données ──────────────────────────────────────────────────────
+const CANDIDATS=[
+ [1,"DAVID","Youenn","18,03"],[2,"MARTY","Nicolas","17,17"],[3,"SCARFO","Aymeric","17,10"],
+ [4,"WEIL","Rémi","17,02"],[5,"RUBENS","Miguel","16,77"],[6,"BIOT","Béranger","16,53"],
+ [7,"PROST","Jérémy","16,49"],[8,"POMAREDE","Clément","16,47"],[9,"GUYON","Thomas","16,39"],
+ [10,"TROALEN","Jordane","16,04"],[11,"PIBOULEAU","Doryan","15,98"],[12,"MAIRE","Théo","15,89"],
+ [13,"DOULACHE","Andy","15,85"],[14,"BUDZYNOWSKI","Alexis","15,74"],[15,"SALMERON","Matthieu","15,63"]
+].map(c=>({rang:c[0],nom:c[1],prenom:c[2],moy:c[3]}));
+
+const PLACES=[
+ {id:"SCRTA",label:"SCRTA",cap:3,sp:1},{id:"SESTI",label:"SESTI DG",cap:1,sp:1},
+ {id:"RSB",label:"RSB",cap:2,sp:1},{id:"CNO",label:"CNO",cap:2,sp:1},
+ ...[["03","Allier",2],["07","Ardèche",1],["10","Aube",1],["14","Calvados",1],["15","Cantal",1],
+ ["17","Charente-Mar.",1],["18","Cher",1],["25","Doubs",1],["28","Eure-et-Loir",1],["29","Finistère",2],
+ ["33","Gironde",1],["38","Isère",1],["40","Landes",2],["41","Loir-et-Cher",1],["44","Loire-Atl.",1],
+ ["45","Loiret",1],["50","Manche",1],["52","Haute-Marne",1],["53","Mayenne",1],["54","Meurthe-et-M.",1],
+ ["55","Meuse",1],["57","Moselle",2],["60","Oise",1],["62","Pas-de-Calais",2],["63","Puy-de-Dôme",1],
+ ["76","Seine-Mar.",1],["77","Seine-et-M.",2],["84","Vaucluse",1],["85","Vendée",1],["87","Haute-Vienne",1],
+ ["89","Yonne",1],["91","Essonne",1],["94","Val-de-Marne",3]].map(d=>({id:d[0],label:d[1],cap:d[2],sp:0}))
+];
+const P=Object.fromEntries(PLACES.map(p=>[p.id,p]));
+const AMPHIS=[["blanc1","Blanc 1"],["blanc2","Blanc 2"],["blanc3","Blanc 3"],["reel","Réel"]];
+
+// ─── État + sauvegarde locale ─────────────────────────────────────
+const KEY="amphi-choix-v2";
+let mem=null; // secours si localStorage indisponible
+function load(){
+  try{const v=localStorage.getItem(KEY); if(v) return JSON.parse(v);}catch(e){}
+  return mem||{choix:{blanc1:{},blanc2:{},blanc3:{},reel:{}},voeux:[]};
+}
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){mem=S;}
+}
+let S=load();
+let amphi="blanc1", modeVoeux=false, confirmReset=false;
+
+// ─── Helpers ──────────────────────────────────────────────────────
+const choix=()=>S.choix[amphi];
+const reste=id=>P[id].cap-Object.values(choix()).filter(v=>v===id).length;
+const courant=()=>CANDIDATS.find(c=>choix()[c.rang]===undefined)||null;
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+// ─── Actions ──────────────────────────────────────────────────────
+function tapTile(id){
+  if(modeVoeux){
+    const i=S.voeux.indexOf(id);
+    i>=0?S.voeux.splice(i,1):S.voeux.push(id);
+  }else{
+    const c=courant();
+    if(!c||reste(id)<=0)return;
+    choix()[c.rang]=id;
+  }
+  save();render();
+}
+function retirer(r){delete choix()[r];save();render();}
+function undo(){
+  const ks=Object.keys(choix()).map(Number);
+  if(ks.length)retirer(Math.max(...ks));
+}
+function reset(){
+  if(!confirmReset){confirmReset=true;render();return;}
+  S.choix[amphi]={};confirmReset=false;save();render();
+}
+function bouger(i,d){
+  const j=i+d;if(j<0||j>=S.voeux.length)return;
+  [S.voeux[i],S.voeux[j]]=[S.voeux[j],S.voeux[i]];save();render();
+}
+function dropVoeu(i){S.voeux.splice(i,1);save();render();}
+function setAmphi(a){amphi=a;confirmReset=false;render();}
+function toggleMode(){modeVoeux=!modeVoeux;render();}
+
+// ─── Rendu ────────────────────────────────────────────────────────
+function dots(cap,r,sp){
+  let h='<span class="dots">';
+  for(let i=0;i<cap;i++)h+='<span class="dot'+(i<r?" on":"")+'"></span>';
+  return h+'</span>';
+}
+function render(){
+  const cur=courant(), n=Object.keys(choix()).length;
+
+  // Onglets
+  document.getElementById("tabs").innerHTML=AMPHIS.map(([id,lb])=>
+    `<button class="tab${amphi===id?" on":""}${id==="reel"?" reel":""}" onclick="setAmphi('${id}')">
+      ${lb}<small>${Object.keys(S.choix[id]).length}/15</small></button>`).join("");
+
+  // Candidat en cours
+  const cc=document.getElementById("currentCard");
+  cc.className="card"+(amphi==="reel"?" reel":"");
+  cc.innerHTML=(cur
+    ?`<div class="cur"><div class="badge mono">${cur.rang}</div>
+       <div><div class="lbl">Au choix</div>
+       <div class="nm">${cur.nom} <span>${cur.prenom}</span></div></div>
+       <div class="moy mono">${cur.moy}</div></div>`
+    :`<div class="done">✓ Amphi terminé — les 15 affectations sont saisies</div>`)
+    +`<div class="bar"><i style="width:${n/15*100}%"></i></div>`;
+
+  // Bouton mode vœux + indication
+  const mb=document.getElementById("modeBtn");
+  mb.className="btn"+(modeVoeux?" amber":"");
+  mb.textContent=modeVoeux?"✓ Terminer":"+ Modifier";
+  mb.onclick=toggleMode;
+  document.getElementById("voeuxHint").innerHTML=modeVoeux
+    ?'<div class="hint">Mode édition des vœux : touchez une tuile ci-dessous pour l\u2019ajouter ou la retirer de votre liste.</div>':"";
+
+  // Liste de vœux
+  const best=S.voeux.find(id=>reste(id)>0);
+  const vl=document.getElementById("voeuxList");
+  if(!S.voeux.length){
+    vl.innerHTML='<div class="empty">Aucun vœu pour l\u2019instant. Touchez « Modifier » puis sélectionnez vos places préférées dans l\u2019ordre.</div>';
+  }else{
+    vl.innerHTML=S.voeux.map((id,i)=>{
+      const p=P[id],r=reste(id),lost=r<=0,b=id===best;
+      return `<div class="vrow${lost?" lost":b?" best":""}">
+        <span class="vnum mono">${i+1}</span>
+        <span class="vlab"><b class="mono">${p.sp?p.label:p.id}</b>${p.sp?"":" "+esc(p.label)}</span>
+        ${lost?'<span class="vtag lost">Pris</span>':b?'<span class="vtag best">→ Meilleur dispo</span>':dots(p.cap,r)}
+        <button class="icoBtn" onclick="bouger(${i},-1)" ${i===0?"disabled":""}>▲</button>
+        <button class="icoBtn" onclick="bouger(${i},1)" ${i===S.voeux.length-1?"disabled":""}>▼</button>
+        <button class="icoBtn" onclick="dropVoeu(${i})">✕</button></div>`;
+    }).join("");
+  }
+  document.getElementById("voeuxWarn").innerHTML=
+    (S.voeux.length&&!best)?'<div class="warnAll">⚠ Tous vos vœux ont été pris dans cet amphi.</div>':"";
+
+  // Tuiles
+  const tile=p=>{
+    const r=reste(p.id),off=r<=0,wish=S.voeux.includes(p.id);
+    const cls="tile"+(modeVoeux&&wish?" wish":off?" off":p.sp?" special":"");
+    const click=(modeVoeux||(!off&&cur))?`onclick="tapTile('${p.id}')"`:"";
+    return `<button class="${cls}" ${click}>
+      ${wish&&!modeVoeux?'<span class="heart">♥</span>':""}
+      <span class="num mono">${p.sp?p.label:p.id}</span>
+      ${p.sp?"":`<span class="nm">${esc(p.label)}</span>`}
+      ${dots(p.cap,r)}</button>`;
+  };
+  document.getElementById("gridSpec").innerHTML=PLACES.filter(p=>p.sp).map(tile).join("");
+  document.getElementById("gridDept").innerHTML=PLACES.filter(p=>!p.sp).map(tile).join("");
+
+  // Récap
+  document.getElementById("recapTitle").textContent=
+    "Affectations — "+AMPHIS.find(a=>a[0]===amphi)[1];
+  const ub=document.getElementById("undoBtn");
+  ub.disabled=n===0; ub.onclick=undo;
+  const rb=document.getElementById("resetBtn");
+  rb.disabled=n===0&&!confirmReset; rb.onclick=reset;
+  rb.className="btn "+(confirmReset?"solid-red":"danger");
+  rb.textContent=confirmReset?"Confirmer ?":"⟲ Réinitialiser";
+
+  document.getElementById("recap").innerHTML=CANDIDATS.map(c=>{
+    const pid=choix()[c.rang], enCours=cur&&cur.rang===c.rang;
+    return `<div class="rrow${enCours?" cur":""}">
+      <span class="rnum mono">${c.rang}</span>
+      <span class="rname"><b>${c.nom}</b> <span>${c.prenom}</span></span>
+      ${pid?`<span class="pill${P[pid].sp?" sp":""} mono">${P[pid].sp?P[pid].label:pid+" · "+esc(P[pid].label)}</span>
+        <button class="icoBtn" onclick="retirer(${c.rang})">✕</button>`
+       :`<span class="dash mono">${enCours?"→ en cours":"—"}</span>`}</div>`;
+  }).join("");
+}
+render();
+</script>
+</body>
+</html>

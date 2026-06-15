@@ -10,186 +10,193 @@
 <style>
 :root{
   --bg:#f1f5f9;--card:#fff;--ink:#0f172a;--muted:#64748b;--faint:#94a3b8;--line:#e2e8f0;
-  --teal:#0d9488;--teal-l:#ccfbf1;--green:#16a34a;
-  --red:#dc2626;--red-l:#fee2e2;--amber:#d97706;--amber-l:#fef3c7;
+  --teal:#0d9488;--teal-l:#ccfbf1;--red:#dc2626;--red-l:#fee2e2;
   --indigo:#4f46e5;--indigo-l:#e0e7ff;
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-top: env(safe-area-inset-top, 0px);
+  --sat: env(safe-area-inset-top,0px);
+  --sab: env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 body{
   background:var(--bg);color:var(--ink);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  height:100dvh;display:flex;flex-direction:column;overflow:hidden;
+  min-height:100dvh;
+  padding-bottom:calc(20px + var(--sab));
 }
 
 /* ── HEADER ── */
 .hdr{
   background:#0f172a;color:#fff;
-  padding:calc(12px + var(--safe-top)) 16px 0;
-  flex-shrink:0;
+  padding:calc(10px + var(--sat)) 14px 0;
+  position:sticky;top:0;z-index:99;
 }
-.hdr-top{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px}
-.hdr-top h1{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.hdr-top{
+  display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;
+}
+.hdr-top h1{font-size:16px;font-weight:800}
 .hdr-top .sub{font-size:10px;color:#475569;margin-top:1px}
-.amphi-tabs{display:flex;gap:5px}
+.atabs{display:flex;gap:5px}
 .atab{
-  flex:1;border:none;border-radius:8px 8px 0 0;padding:8px 2px 10px;
+  flex:1;border:none;border-radius:7px 7px 0 0;padding:7px 2px 9px;
   font-size:11px;font-weight:700;background:#1e293b;color:#475569;cursor:pointer;
 }
 .atab .cnt{display:block;font-size:10px;font-weight:400;opacity:.7;margin-top:1px}
 .atab.on{background:var(--bg);color:var(--ink)}
-.atab.on.reel{background:#fef2f2;color:#991b1b}
-.atab.reel .cnt{opacity:.8}
+.atab.reel{background:#2d1212;color:#ef4444}
+.atab.reel.on{background:#fef2f2;color:#991b1b}
 
-/* ── SCROLL AREA ── */
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.pane{display:none;padding:14px 16px calc(16px + var(--safe-bottom))}
-.pane.on{display:block}
+/* ── WRAP ── */
+.wrap{padding:12px 14px 0}
 
-/* ── BOTTOM NAV ── */
-.bnav{
-  display:flex;background:var(--card);
-  border-top:1px solid var(--line);flex-shrink:0;
-  padding-bottom:var(--safe-bottom);
+/* ── CANDIDAT ── */
+.cbar{
+  display:flex;align-items:center;gap:10px;
+  background:var(--card);border-radius:12px;padding:10px 13px;margin-bottom:10px;
+  box-shadow:0 1px 3px rgba(0,0,0,.07);
 }
-.nbtn{
-  flex:1;border:none;background:none;
-  padding:10px 4px 8px;font-size:10px;color:var(--faint);cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:2px;
+.cbdg{
+  width:36px;height:36px;border-radius:50%;background:#0f172a;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;flex-shrink:0;
 }
-.nbtn .ico{font-size:22px;line-height:1}
-.nbtn.on{color:var(--teal)}
+.cinfo{flex:1}
+.cname{font-weight:800;font-size:14px;line-height:1.2}
+.csub{font-size:10px;color:var(--muted);margin-top:1px}
+.cprog{flex:1}
+.cprog-bar{height:5px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:3px}
+.cprog-bar i{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .3s}
+.cprog-txt{font-size:10px;color:var(--muted)}
+.cdone{font-weight:700;color:var(--teal);font-size:13px}
 
 /* ── HERO ── */
 .hero{
-  border-radius:20px;padding:22px 20px;margin-bottom:14px;
-  text-align:center;position:relative;overflow:hidden;
+  border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  display:flex;align-items:center;gap:13px;
+  box-shadow:0 2px 10px rgba(13,148,136,.25);
 }
 .hero.avail{
-  background:linear-gradient(135deg,#0f172a 0%,#134e6f 60%,#0d6e6e 100%);
-  color:#fff;box-shadow:0 4px 20px rgba(13,148,136,.35);
+  background:linear-gradient(120deg,#0f172a 0%,#0c4a6e 60%,#134e4a 100%);
+  color:#fff;
 }
-.hero.none{background:var(--red-l);color:var(--red)}
-.hero.idle{background:#f8fafc;border:2px dashed var(--line);color:var(--muted)}
-.hero .hl{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;opacity:.65;margin-bottom:10px}
-.hero .hcity{font-size:38px;font-weight:900;line-height:1;letter-spacing:-.5px;margin-bottom:6px}
-.hero .hdept{font-size:13px;opacity:.65;margin-bottom:14px}
-.hero .hbadge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);
-  backdrop-filter:blur(4px);border-radius:99px;padding:6px 16px;font-size:13px;font-weight:700;
+.hero.none{background:var(--red-l);color:var(--red);box-shadow:none}
+.hero.idle{background:var(--card);color:var(--muted);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.hero-icon{font-size:28px;flex-shrink:0;line-height:1}
+.hero-body{flex:1;min-width:0}
+.hero-label{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;opacity:.6;margin-bottom:3px}
+.hero-city{font-size:22px;font-weight:900;line-height:1;letter-spacing:-.3px}
+.hero-sub{font-size:11px;opacity:.65;margin-top:3px}
+.hero-badge{
+  flex-shrink:0;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);
+  border-radius:10px;padding:6px 10px;text-align:center;
 }
-.hero.idle .hcity{font-size:20px;font-weight:600}
-.hero.none .hcity{font-size:22px;font-weight:800}
+.hero-badge .n{font-size:18px;font-weight:900;line-height:1}
+.hero-badge .l{font-size:9px;opacity:.7}
+.hero.idle .hero-badge,.hero.none .hero-badge{display:none}
 
-/* ── PROG ── */
-.prog{
-  display:flex;align-items:center;gap:10px;
-  background:var(--card);border-radius:12px;padding:10px 14px;margin-bottom:14px;
-  box-shadow:0 1px 2px rgba(0,0,0,.05);
+/* ── VOEUX STRIP ── */
+.voeux-strip{
+  display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px;
+  scrollbar-width:none;
 }
-.prog-bar{flex:1;height:5px;border-radius:99px;background:var(--line);overflow:hidden}
-.prog-bar i{display:block;height:100%;background:var(--teal);transition:width .3s;border-radius:99px}
-.prog-txt{font-size:12px;color:var(--muted);white-space:nowrap}
+.voeux-strip::-webkit-scrollbar{display:none}
+.vpill{
+  flex-shrink:0;border-radius:99px;padding:5px 11px;
+  display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
+  border:1.5px solid transparent;white-space:nowrap;
+}
+.vpill.best{background:var(--teal);color:#fff;border-color:var(--teal)}
+.vpill.ok{background:var(--card);color:var(--ink);border-color:var(--line)}
+.vpill.pris{background:#f1f5f9;color:var(--faint);border-color:var(--line);text-decoration:line-through}
+.vpill-num{font-size:10px;opacity:.6}
 
 /* ── SECTION TITLE ── */
 .stitle{
-  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
-  color:var(--muted);margin:18px 0 8px;display:flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;
+  color:var(--muted);margin:14px 0 8px;display:flex;align-items:center;gap:5px;
 }
 
+/* ── TILES ── */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px}
+.tile{
+  border-radius:13px;padding:9px 3px 8px;text-align:center;
+  border:1.5px solid var(--line);background:var(--card);
+  cursor:pointer;transition:transform .07s, box-shadow .07s;
+  position:relative;box-shadow:0 1px 2px rgba(0,0,0,.05);
+}
+.tile:active{transform:scale(.91);box-shadow:none}
+.tile .tid{font-size:18px;font-weight:900;line-height:1;font-family:ui-monospace,monospace}
+.tile .tlb{display:block;font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;margin-top:2px}
+.tile .tdots{display:flex;justify-content:center;gap:3px;margin-top:6px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--teal)}
+/* Spéciaux */
+.tile.sp{background:var(--indigo);border-color:#4338ca;color:#fff;box-shadow:0 2px 6px rgba(79,70,229,.3)}
+.tile.sp .tid{font-size:10px;height:28px;display:flex;align-items:center;justify-content:center;line-height:1.2}
+.tile.sp .tlb{color:rgba(255,255,255,.5)}
+.tile.sp .dot.on{background:#a5f3fc}
+/* Épuisé */
+.tile.full{background:#f1f5f9;border-color:#e2e8f0;color:#cbd5e1;cursor:default;box-shadow:none}
+.tile.full .tlb,.tile.full .dot.on{color:#e2e8f0;background:#e2e8f0}
+/* Mon vœu */
+.tile.wish{border-color:var(--teal);border-width:2px;box-shadow:0 0 0 3px rgba(13,148,136,.12)}
+.tile.wish .dot.on{background:var(--teal)}
+.tile .wi{position:absolute;top:3px;right:5px;font-size:8px;color:var(--teal);font-weight:900}
+/* Best voeu */
+.tile.best-tile{border-color:#0d9488;background:linear-gradient(135deg,#f0fdfa,#ccfbf1);border-width:2px}
+.tile.best-tile .tid{color:#0f766e}
+
+/* ── ACTIONS ── */
+.rowbtns{display:flex;gap:8px;margin:14px 0}
+.btn{
+  flex:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:10px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.btn:disabled{opacity:.3}
+.btn.red{color:var(--red)}
+.btn.confirm{background:var(--red);color:#fff;border-color:var(--red)}
+
 /* ── VOEUX LIST ── */
-.vcard{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.vcard{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .vrow{
-  display:flex;align-items:center;gap:10px;padding:13px 14px;
+  display:flex;align-items:center;gap:9px;padding:11px 13px;
   border-bottom:1px solid var(--line);position:relative;
 }
 .vrow:last-child{border-bottom:none}
-.vrow.best{background:linear-gradient(90deg,rgba(13,148,136,.07) 0%,transparent 100%)}
+.vrow.best{background:linear-gradient(90deg,rgba(13,148,136,.06) 0%,transparent 100%)}
 .vrow.pris{background:#fafafa}
 .bar-l{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--teal);border-radius:0 3px 3px 0}
 .vnum{
-  width:26px;height:26px;border-radius:50%;display:flex;align-items:center;
+  width:24px;height:24px;border-radius:50%;display:flex;align-items:center;
   justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;
   background:var(--line);color:var(--muted);
 }
 .vrow.best .vnum{background:var(--teal);color:#fff}
-.vrow.pris .vnum{background:#fee2e2;color:#ef4444}
+.vrow.pris .vnum{background:#fee2e2;color:#f87171}
 .vinfo{flex:1;min-width:0}
-.vville{font-size:15px;font-weight:800;line-height:1.2}
+.vville{font-size:14px;font-weight:800;line-height:1.2}
 .vrow.pris .vville{text-decoration:line-through;color:var(--faint)}
-.vdept{font-size:11px;color:var(--muted);margin-top:1px}
+.vdept{font-size:10px;color:var(--muted);margin-top:1px}
 .vrow.pris .vdept{color:var(--faint)}
-.vstatus{flex-shrink:0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:4px 9px;border-radius:99px}
+.vstatus{flex-shrink:0;font-size:10px;font-weight:800;text-transform:uppercase;padding:3px 8px;border-radius:99px}
 .vstatus.bst{background:var(--teal);color:#fff}
 .vstatus.ok{background:var(--teal-l);color:var(--teal)}
-.vstatus.pris{background:#fee2e2;color:#ef4444}
-
-/* ── CANDIDAT ── */
-.ccrd{
-  background:var(--card);border-radius:14px;padding:12px 14px;
-  display:flex;align-items:center;gap:12px;margin-bottom:12px;
-  box-shadow:0 1px 3px rgba(0,0,0,.06);
-}
-.cbdg{
-  width:42px;height:42px;border-radius:50%;background:#0f172a;color:#fff;
-  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;flex-shrink:0;
-}
-.cname{font-weight:800;font-size:15px}
-.csub{font-size:11px;color:var(--muted);margin-top:1px}
-.cdone{text-align:center;font-weight:700;color:var(--teal);width:100%}
-
-/* ── BUTTONS ── */
-.rowbtns{display:flex;gap:8px;margin-bottom:14px}
-.btn{
-  flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);
-  border-radius:10px;padding:9px 6px;font-size:12px;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:5px;
-}
-.btn:disabled{opacity:.35}
-.btn.red{color:var(--red)}
-.btn.confirm{background:var(--red);color:#fff;border-color:var(--red)}
-
-/* ── GRIDS ── */
-.glabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:14px 0 8px}
-.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:6px}
-.tile{
-  border-radius:12px;padding:9px 3px 8px;text-align:center;border:1px solid var(--line);
-  background:var(--card);cursor:pointer;transition:transform .07s;position:relative;
-}
-.tile:active{transform:scale(.92)}
-.tile .tid{font-size:18px;font-weight:900;line-height:1;font-family:ui-monospace,monospace}
-.tile .tlb{display:block;font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;margin-top:2px}
-.tile .tdots{display:flex;justify-content:center;gap:3px;margin-top:5px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
-.dot.on{background:var(--teal)}
-.tile.sp{background:var(--indigo);border-color:#4338ca;color:#fff}
-.tile.sp .tid{font-size:10px;height:28px;display:flex;align-items:center;justify-content:center;line-height:1.2}
-.tile.sp .tlb{color:rgba(255,255,255,.55)}
-.tile.sp .dot.on{background:#5eead4}
-.tile.full{background:#f1f5f9;border-color:#e2e8f0;color:var(--faint);cursor:default;box-shadow:none}
-.tile.full .tlb,.tile.full .dot.on{color:var(--faint);background:#cbd5e1}
-.tile.wish{border-color:var(--teal);border-width:2px}
-.tile .wi{position:absolute;top:3px;right:5px;font-size:8px;color:var(--teal)}
+.vstatus.pris{background:var(--red-l);color:var(--red)}
 
 /* ── RECAP ── */
 .rcrd{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.rrow{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line)}
+.rrow{display:flex;align-items:center;gap:7px;padding:8px 12px;border-bottom:1px solid var(--line)}
 .rrow:last-child{border-bottom:none}
 .rrow.cur{background:#f0fdfa}
-.rnum{width:22px;text-align:right;font-size:11px;color:var(--faint);font-family:monospace}
-.rnm{flex:1;font-size:13px}
+.rnum{width:20px;text-align:right;font-size:11px;color:var(--faint);font-family:monospace;flex-shrink:0}
+.rnm{flex:1;font-size:13px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .rnm b{font-weight:800}
 .rnm span{color:var(--muted)}
-.rpill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:7px;background:var(--teal-l);color:#0f766e;font-family:monospace}
+.rpill{font-size:11px;font-weight:700;padding:3px 7px;border-radius:6px;background:var(--teal-l);color:#0f766e;font-family:monospace;flex-shrink:0;white-space:nowrap}
 .rpill.sp{background:var(--indigo-l);color:var(--indigo)}
-.rdash{font-size:12px;color:var(--line);font-family:monospace}
-.rdel{border:none;background:none;color:var(--faint);padding:4px;cursor:pointer;font-size:14px}
+.rdash{font-size:12px;color:#e2e8f0;font-family:monospace}
+.rdel{border:none;background:none;color:var(--faint);padding:3px 5px;cursor:pointer;font-size:14px;flex-shrink:0}
 
-/* ── WARN ALL ── */
-.warn-all{font-size:12px;font-weight:700;color:var(--red);text-align:center;
-  background:var(--red-l);border-radius:10px;padding:10px;margin-top:10px}
+.foot{text-align:center;font-size:10px;color:var(--faint);margin-top:16px;padding:0 10px}
+.warn{font-size:12px;font-weight:700;color:var(--red);background:var(--red-l);border-radius:10px;padding:10px;text-align:center;margin-top:10px}
 </style>
 </head>
 <body>
@@ -201,42 +208,45 @@ body{
       <div class="sub">Cyber-NUM 2025-2026 · SALMERON Matthieu</div>
     </div>
   </div>
-  <div class="amphi-tabs" id="amphiTabs"></div>
+  <div class="atabs" id="amphiTabs"></div>
 </div>
 
-<div class="content">
-  <!-- VOEUX PANE -->
-  <div class="pane on" id="pane-voeux">
-    <div id="progBar"></div>
-    <div id="heroCard"></div>
-    <div class="stitle">♥ Mes vœux — ordre de préférence</div>
-    <div class="vcard" id="voeuxList"></div>
-    <div id="vwarn"></div>
+<div class="wrap">
+
+  <!-- Candidat en cours -->
+  <div id="candBar" style="margin-top:12px"></div>
+
+  <!-- Hero meilleur vœu -->
+  <div id="heroCard"></div>
+
+  <!-- Vœux scrollable strip -->
+  <div class="stitle">♥ Mes vœux</div>
+  <div class="voeux-strip" id="voeuxStrip"></div>
+
+  <!-- Tuiles postes spécifiques -->
+  <div class="stitle">★ Postes spécifiques</div>
+  <div class="grid" id="gridSpec"></div>
+
+  <!-- Tuiles départements -->
+  <div class="stitle">⚲ Départements</div>
+  <div class="grid" id="gridDept"></div>
+
+  <!-- Boutons -->
+  <div class="rowbtns">
+    <button class="btn" id="undoBtn" onclick="undo()">↩ Annuler</button>
+    <button class="btn red" id="resetBtn" onclick="resetAmphi()">⟲ Réinitialiser</button>
   </div>
 
-  <!-- SAISIE PANE -->
-  <div class="pane" id="pane-saisie">
-    <div id="candCard"></div>
-    <div class="rowbtns">
-      <button class="btn" id="undoBtn" onclick="undo()">↩ Annuler</button>
-      <button class="btn red" id="resetBtn" onclick="resetAmphi()">⟲ Réinitialiser</button>
-    </div>
-    <div class="glabel">★ Postes spécifiques</div>
-    <div class="pgrid" id="gridSpec"></div>
-    <div class="glabel">⚲ Départements</div>
-    <div class="pgrid" id="gridDept"></div>
-    <div class="stitle" style="margin-top:6px">Affectations — <span id="recapAmphi"></span></div>
-    <div class="rcrd" id="recapList"></div>
-  </div>
-</div>
+  <!-- Vœux liste détaillée -->
+  <div class="stitle">♥ Détail des vœux</div>
+  <div class="vcard" id="voeuxList"></div>
+  <div id="vwarn"></div>
 
-<div class="bnav">
-  <button class="nbtn on" id="nav-voeux" onclick="switchTab('voeux')">
-    <span class="ico">♥</span><span>Mes vœux</span>
-  </button>
-  <button class="nbtn" id="nav-saisie" onclick="switchTab('saisie')">
-    <span class="ico">📝</span><span>Saisie</span>
-  </button>
+  <!-- Récap -->
+  <div class="stitle">Affectations — <span id="recapAmphi"></span></div>
+  <div class="rcrd" id="recapList"></div>
+
+  <div class="foot">Sauvegarde automatique · Classement arrêté au rang 15 (SALMERON M.)</div>
 </div>
 
 <script>
@@ -274,33 +284,29 @@ const PLACES=[
 ];
 const P=Object.fromEntries(PLACES.map(p=>[p.id,p]));
 
-// Vœux de Matthieu — fixes, partagés pour tous les amphis
-// 40 et 62 et 57 apparaissent 2 fois car 2 places dispo dans ces depts
+// Vœux de Matthieu — fixes, communs à tous les amphis
 const VOEUX=[
   {id:"33",city:"Bordeaux"},
-  {id:"40",city:"Mont-de-Marsan"},
-  {id:"40",city:"Mont-de-Marsan"},
+  {id:"40",city:"Mont-de-Marsan"},{id:"40",city:"Mont-de-Marsan"},
   {id:"17",city:"La Rochelle"},
   {id:"44",city:"Nantes"},
   {id:"84",city:"Avignon"},
   {id:"63",city:"Clermont-Ferrand"},
   {id:"85",city:"La Roche-sur-Yon"},
-  {id:"62",city:"Arras"},
-  {id:"62",city:"Arras"},
+  {id:"62",city:"Arras"},{id:"62",city:"Arras"},
   {id:"45",city:"Orléans"},
-  {id:"57",city:"Metz"},
-  {id:"57",city:"Metz"},
+  {id:"57",city:"Metz"},{id:"57",city:"Metz"},
   {id:"25",city:"Besançon"},
   {id:"94",city:"Créteil"}
 ];
+const WISH_IDS=new Set(VOEUX.map(v=>v.id));
 
 const AMPHIS=[["blanc1","Blanc 1"],["blanc2","Blanc 2"],["blanc3","Blanc 3"],["reel","Réel"]];
 const KEY="amphi-v3";
 
 // ── ÉTAT ──────────────────────────────────────────────────────────
 let S={choix:{blanc1:{},blanc2:{},blanc3:{},reel:{}}};
-let amphi="blanc1", tab="voeux", confirmReset=false;
-
+let amphi="blanc1", confirmReset=false;
 try{const v=localStorage.getItem(KEY);if(v)S=JSON.parse(v);}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
 
@@ -316,22 +322,17 @@ function voeuDispo(i){
   const pris=Object.values(ch()).filter(v=>v===id).length;
   return (P[id].cap-pris)>prev;
 }
-
-function meilleur(){
-  for(let i=0;i<VOEUX.length;i++) if(voeuDispo(i)) return i;
-  return -1;
-}
-
+function meilleur(){for(let i=0;i<VOEUX.length;i++)if(voeuDispo(i))return i;return -1;}
 function tdots(cap,r){
   let h='<div class="tdots">';
-  for(let i=0;i<cap;i++) h+=`<span class="dot${i<r?' on':''}"></span>`;
+  for(let i=0;i<cap;i++)h+=`<span class="dot${i<r?' on':''}"></span>`;
   return h+'</div>';
 }
 
 // ── ACTIONS ───────────────────────────────────────────────────────
 function choisir(id){
-  const c=courant(); if(!c||reste(id)<=0) return;
-  S.choix[amphi][c.rang]=id; save(); render();
+  const c=courant();if(!c||reste(id)<=0)return;
+  S.choix[amphi][c.rang]=id;save();render();
 }
 function retirer(r){delete S.choix[amphi][r];save();render();}
 function undo(){const ks=Object.keys(ch()).map(Number);if(ks.length)retirer(Math.max(...ks));}
@@ -339,107 +340,90 @@ function resetAmphi(){
   if(!confirmReset){confirmReset=true;render();return;}
   S.choix[amphi]={};confirmReset=false;save();render();
 }
-function switchTab(t){tab=t;document.getElementById('pane-voeux').className='pane'+(t==='voeux'?' on':'');
-  document.getElementById('pane-saisie').className='pane'+(t==='saisie'?' on':'');
-  document.getElementById('nav-voeux').className='nbtn'+(t==='voeux'?' on':'');
-  document.getElementById('nav-saisie').className='nbtn'+(t==='saisie'?' on':'');
-}
 function setAmphi(a){amphi=a;confirmReset=false;render();}
 
 // ── RENDER ────────────────────────────────────────────────────────
 function render(){
   const cur=courant(), n=Object.keys(ch()).length, best=meilleur();
-  const isReel=amphi==='reel';
 
-  // Tabs
+  // Onglets amphis
   document.getElementById('amphiTabs').innerHTML=AMPHIS.map(([id,lb])=>{
     const cnt=Object.keys(S.choix[id]||{}).length;
-    return `<button class="atab${amphi===id?' on':''}${id==='reel?' reel':''}" onclick="setAmphi('${id}')">
+    const on=amphi===id, isReel=id==='reel';
+    return `<button class="atab${on?' on':''}${isReel?' reel':''}" onclick="setAmphi('${id}')">
       ${lb}<span class="cnt">${cnt}/15</span></button>`;
   }).join('');
 
-  // Prog
-  document.getElementById('progBar').innerHTML=`
-    <div class="prog">
-      <div class="prog-bar"><i style="width:${n/15*100}%"></i></div>
-      <div class="prog-txt">${n} candidat${n>1?'s':''} ont choisi${n<15?' · '+(15-n)+' restant'+(15-n>1?'s':' (vous)')':''}</div>
-    </div>`;
+  // Candidat bar
+  const n14=Math.min(n,14); // candidats avant Matthieu
+  document.getElementById('candBar').innerHTML=cur
+    ?`<div class="cbar">
+        <div class="cbdg">${cur.rang}</div>
+        <div class="cinfo">
+          <div class="cname">${cur.nom} ${cur.prenom}</div>
+          <div class="csub">Moy. ${cur.moy} · Vœu n°${best>=0?best+1:'—'} disponible</div>
+        </div>
+        <div class="cprog">
+          <div class="cprog-bar"><i style="width:${n/14*100}%"></i></div>
+          <div class="cprog-txt">${n}/14 avant vous</div>
+        </div>
+      </div>`
+    :`<div class="cbar"><div class="cdone">✓ Tous les candidats ont choisi</div></div>`;
 
   // Hero
   let hero='';
-  if(best===-1 && n>0){
-    hero=`<div class="hero none">
-      <div class="hl">⚠ Situation critique</div>
-      <div class="hcity">Tous vos vœux sont pris</div>
-      <div class="hdept">Consultez les places restantes dans Saisie</div>
+  if(best===-1&&n===0){
+    hero=`<div class="hero idle">
+      <div class="hero-icon">⏳</div>
+      <div class="hero-body"><div class="hero-label">En attente</div>
+      <div class="hero-city" style="font-size:16px;color:var(--muted)">Saisissez les choix ci-dessous</div></div>
     </div>`;
   } else if(best===-1){
-    hero=`<div class="hero idle">
-      <div class="hl">En attente</div>
-      <div class="hcity">Saisissez les choix pour commencer</div>
+    hero=`<div class="hero none">
+      <div class="hero-icon">⚠️</div>
+      <div class="hero-body"><div class="hero-label">Attention</div>
+      <div class="hero-city">Tous vos vœux sont pris</div></div>
     </div>`;
   } else {
-    const v=VOEUX[best], p=P[v.id], r=reste(v.id);
+    const v=VOEUX[best],p=P[v.id],r=reste(v.id);
     const prev=VOEUX.slice(0,best).filter(x=>x.id===v.id).length;
     const multi=p.cap>1?` · Place ${prev+1}/${p.cap}`:'';
     hero=`<div class="hero avail">
-      <div class="hl">🎯 Votre meilleur choix disponible</div>
-      <div class="hcity">${esc(v.city)}</div>
-      <div class="hdept">Dép. ${p.id} — ${esc(p.label)}${multi}</div>
-      <div class="hbadge">Vœu n°${best+1} · ${r} place${r>1?'s':''} disponible${r>1?'s':''}</div>
+      <div class="hero-icon">🎯</div>
+      <div class="hero-body">
+        <div class="hero-label">Meilleur choix disponible</div>
+        <div class="hero-city">${esc(v.city)}</div>
+        <div class="hero-sub">Dép. ${p.id} · ${esc(p.label)}${multi}</div>
+      </div>
+      <div class="hero-badge">
+        <div class="n">${r}</div>
+        <div class="l">place${r>1?'s':''}</div>
+      </div>
     </div>`;
   }
   document.getElementById('heroCard').innerHTML=hero;
 
-  // Vœux list
-  const wishIds=new Set(VOEUX.map(v=>v.id));
-  document.getElementById('voeuxList').innerHTML=VOEUX.map((v,i)=>{
-    const dispo=voeuDispo(i), isBest=i===best;
-    const p=P[v.id], r=reste(v.id);
-    const prev=VOEUX.slice(0,i).filter(x=>x.id===v.id).length;
-    const rowCls=isBest?'vrow best':!dispo?'vrow pris':'vrow';
-    let badge='';
-    if(isBest) badge='<span class="vstatus bst">→ À choisir</span>';
-    else if(!dispo) badge='<span class="vstatus pris">Pris</span>';
-    else {
-      const slotsLeft=r-prev;
-      badge=`<span class="vstatus ok">${slotsLeft} dispo</span>`;
-    }
-    const slotLabel=p.cap>1?` <span style="color:var(--faint);font-size:10px">(${prev+1}/${p.cap})</span>`:'';
-    return `<div class="${rowCls}">
-      ${isBest?'<div class="bar-l"></div>':''}
-      <div class="vnum">${i+1}</div>
-      <div class="vinfo">
-        <div class="vville">${esc(v.city)}${slotLabel}</div>
-        <div class="vdept">Dép. ${p.id} · ${esc(p.label)}</div>
-      </div>
-      ${badge}
+  // Vœux strip (pills horizontaux)
+  document.getElementById('voeuxStrip').innerHTML=VOEUX.map((v,i)=>{
+    const dispo=voeuDispo(i),isBest=i===best;
+    const cls=isBest?'best':dispo?'ok':'pris';
+    return `<div class="vpill ${cls}">
+      <span class="vpill-num">${i+1}</span>
+      ${esc(v.city)}
     </div>`;
   }).join('');
 
-  document.getElementById('vwarn').innerHTML=
-    (best===-1&&n>0)?'<div class="warn-all">⚠ Tous vos vœux sont pris dans cet amphi !</div>':'';
-
-  // Candidat
-  document.getElementById('candCard').innerHTML=cur
-    ?`<div class="ccrd"><div class="cbdg">${cur.rang}</div>
-       <div><div class="csub">Au choix</div><div class="cname">${cur.nom} ${cur.prenom}</div>
-       <div class="csub">Moy. ${cur.moy}</div></div></div>`
-    :`<div class="ccrd"><div class="cdone">✓ Amphi terminé — tous les candidats ont choisi</div></div>`;
-
-  // Buttons
-  document.getElementById('undoBtn').disabled=n===0;
-  const rb=document.getElementById('resetBtn');
-  rb.disabled=n===0&&!confirmReset;
-  rb.className='btn'+(confirmReset?' confirm':' red');
-  rb.textContent=confirmReset?'Confirmer ?':'⟲ Réinitialiser';
-  document.getElementById('recapAmphi').textContent=AMPHIS.find(a=>a[0]===amphi)[1];
-
-  // Tuile helper
+  // Tuiles
   const tile=p=>{
-    const r=reste(p.id), full=r<=0, wish=wishIds.has(p.id)&&!p.sp;
-    return `<button class="tile${p.sp?' sp':''}${full?' full':''}${wish&&!full?' wish':''}"
-      ${full||!cur?'disabled':''} onclick="choisir('${p.id}')">
+    const r=reste(p.id),full=r<=0;
+    const wish=WISH_IDS.has(p.id)&&!p.sp;
+    const isBest=best>=0&&VOEUX[best].id===p.id&&!p.sp;
+    let cls='tile';
+    if(p.sp) cls+=' sp';
+    if(full) cls+=' full';
+    else if(isBest) cls+=' best-tile';
+    else if(wish) cls+=' wish';
+    return `<button class="${cls}" ${full||!cur?'disabled':''} onclick="choisir('${p.id}')">
       ${wish&&!full?'<span class="wi">♥</span>':''}
       <div class="tid">${p.sp?p.label:p.id}</div>
       ${!p.sp?`<div class="tlb">${esc(p.city||p.label)}</div>`:''}
@@ -448,14 +432,47 @@ function render(){
   document.getElementById('gridSpec').innerHTML=PLACES.filter(p=>p.sp).map(tile).join('');
   document.getElementById('gridDept').innerHTML=PLACES.filter(p=>!p.sp).map(tile).join('');
 
-  // Recap
+  // Boutons
+  document.getElementById('undoBtn').disabled=n===0;
+  const rb=document.getElementById('resetBtn');
+  rb.disabled=n===0&&!confirmReset;
+  rb.className='btn'+(confirmReset?' confirm':' red');
+  rb.textContent=confirmReset?'Confirmer ?':'⟲ Réinitialiser';
+
+  // Vœux liste
+  document.getElementById('voeuxList').innerHTML=VOEUX.map((v,i)=>{
+    const dispo=voeuDispo(i),isBest=i===best;
+    const p=P[v.id],r=reste(v.id);
+    const prev=VOEUX.slice(0,i).filter(x=>x.id===v.id).length;
+    let badge='';
+    if(isBest) badge='<span class="vstatus bst">→ À choisir</span>';
+    else if(!dispo) badge='<span class="vstatus pris">Pris</span>';
+    else{const s=r-prev;badge=`<span class="vstatus ok">${s} dispo</span>`;}
+    const slot=p.cap>1?`<span style="color:var(--faint);font-size:10px"> ${prev+1}/${p.cap}</span>`:'';
+    return `<div class="vrow${isBest?' best':!dispo?' pris':''}">
+      ${isBest?'<div class="bar-l"></div>':''}
+      <div class="vnum">${i+1}</div>
+      <div class="vinfo">
+        <div class="vville">${esc(v.city)}${slot}</div>
+        <div class="vdept">Dép. ${p.id} · ${esc(p.label)}</div>
+      </div>
+      ${badge}
+    </div>`;
+  }).join('');
+
+  document.getElementById('vwarn').innerHTML=
+    (best===-1&&n>0)?'<div class="warn">⚠ Tous vos vœux ont été pris dans cet amphi</div>':'';
+
+  // Récap
+  document.getElementById('recapAmphi').textContent=AMPHIS.find(a=>a[0]===amphi)[1];
   document.getElementById('recapList').innerHTML=CANDIDATS.map(c=>{
-    const pid=ch()[c.rang], enCours=cur&&cur.rang===c.rang;
+    const pid=ch()[c.rang],enCours=cur&&cur.rang===c.rang;
     return `<div class="rrow${enCours?' cur':''}">
       <span class="rnum">${c.rang}</span>
       <span class="rnm"><b>${c.nom}</b> <span>${c.prenom}</span></span>
-      ${pid?`<span class="rpill${P[pid].sp?' sp':''}">${P[pid].sp?P[pid].label:pid+' · '+esc(P[pid].city||P[pid].label)}</span>
-        <button class="rdel" onclick="retirer(${c.rang})">✕</button>`
+      ${pid
+        ?`<span class="rpill${P[pid].sp?' sp':''}">${P[pid].sp?P[pid].label:pid+' '+esc(P[pid].city||P[pid].label)}</span>
+          <button class="rdel" onclick="retirer(${c.rang})">✕</button>`
         :`<span class="rdash">${enCours?'→':'—'}</span>`}
     </div>`;
   }).join('');

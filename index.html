@@ -246,7 +246,7 @@ body{
   <div class="stitle">Affectations — <span id="recapAmphi"></span></div>
   <div class="rcrd" id="recapList"></div>
 
-  <div class="foot">Sauvegarde automatique · Classement arrêté au rang 15 (SALMERON M.)</div>
+  <div class="foot">Sauvegarde automatique · Saisie des 14 candidats devant vous, arrêt à votre tour (rang 15)</div>
 </div>
 
 <script>
@@ -311,9 +311,11 @@ try{const v=localStorage.getItem(KEY);if(v)S=JSON.parse(v);}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
 
 // ── HELPERS ───────────────────────────────────────────────────────
+const AHEAD=CANDIDATS.filter(c=>c.rang<=14); // les 14 devant Matthieu
+const ME=CANDIDATS[14];                       // rang 15 = SALMERON
 const ch=()=>S.choix[amphi]||{};
 const reste=id=>P[id].cap-Object.values(ch()).filter(v=>v===id).length;
-const courant=()=>CANDIDATS.find(c=>ch()[c.rang]===undefined)||null;
+const courant=()=>AHEAD.find(c=>ch()[c.rang]===undefined)||null;
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
 
 function voeuDispo(i){
@@ -355,7 +357,6 @@ function render(){
   }).join('');
 
   // Candidat bar
-  const n14=Math.min(n,14); // candidats avant Matthieu
   document.getElementById('candBar').innerHTML=cur
     ?`<div class="cbar">
         <div class="cbdg">${cur.rang}</div>
@@ -368,30 +369,38 @@ function render(){
           <div class="cprog-txt">${n}/14 avant vous</div>
         </div>
       </div>`
-    :`<div class="cbar"><div class="cdone">✓ Tous les candidats ont choisi</div></div>`;
+    :`<div class="cbar">
+        <div class="cbdg" style="background:var(--teal)">15</div>
+        <div class="cinfo">
+          <div class="cname">SALMERON Matthieu — c'est votre tour !</div>
+          <div class="csub">Les 14 candidats devant vous ont choisi</div>
+        </div>
+      </div>`;
 
   // Hero
   let hero='';
-  if(best===-1&&n===0){
+  const monTour = !cur; // les 14 devant ont choisi
+  if(best===-1){
+    hero=`<div class="hero none">
+      <div class="hero-icon">⚠️</div>
+      <div class="hero-body"><div class="hero-label">${monTour?'Votre tour':'Attention'}</div>
+      <div class="hero-city">Tous vos vœux sont pris</div>
+      <div class="hero-sub">Voir les places restantes ci-dessous</div></div>
+    </div>`;
+  } else if(n===0){
     hero=`<div class="hero idle">
       <div class="hero-icon">⏳</div>
       <div class="hero-body"><div class="hero-label">En attente</div>
       <div class="hero-city" style="font-size:16px;color:var(--muted)">Saisissez les choix ci-dessous</div></div>
     </div>`;
-  } else if(best===-1){
-    hero=`<div class="hero none">
-      <div class="hero-icon">⚠️</div>
-      <div class="hero-body"><div class="hero-label">Attention</div>
-      <div class="hero-city">Tous vos vœux sont pris</div></div>
-    </div>`;
   } else {
     const v=VOEUX[best],p=P[v.id],r=reste(v.id);
     const prev=VOEUX.slice(0,best).filter(x=>x.id===v.id).length;
     const multi=p.cap>1?` · Place ${prev+1}/${p.cap}`:'';
-    hero=`<div class="hero avail">
-      <div class="hero-icon">🎯</div>
+    hero=`<div class="hero avail"${monTour?' style="box-shadow:0 4px 22px rgba(13,148,136,.5)"':''}>
+      <div class="hero-icon">${monTour?'🎉':'🎯'}</div>
       <div class="hero-body">
-        <div class="hero-label">Meilleur choix disponible</div>
+        <div class="hero-label">${monTour?'À vous — choisissez :':'Meilleur choix disponible'}</div>
         <div class="hero-city">${esc(v.city)}</div>
         <div class="hero-sub">Dép. ${p.id} · ${esc(p.label)}${multi}</div>
       </div>
@@ -466,6 +475,23 @@ function render(){
   // Récap
   document.getElementById('recapAmphi').textContent=AMPHIS.find(a=>a[0]===amphi)[1];
   document.getElementById('recapList').innerHTML=CANDIDATS.map(c=>{
+    // Ligne spéciale pour Matthieu (rang 15) : on affiche sa meilleure option, pas une saisie
+    if(c.rang===15){
+      let pill;
+      if(best>=0){
+        const v=VOEUX[best];
+        pill=`<span class="rpill" style="background:var(--teal);color:#fff">★ ${esc(v.city)}</span>`;
+      } else if(n>0){
+        pill=`<span class="rpill" style="background:var(--red-l);color:var(--red)">vœux épuisés</span>`;
+      } else {
+        pill=`<span class="rdash">→</span>`;
+      }
+      return `<div class="rrow cur" style="border-top:2px solid var(--teal)">
+        <span class="rnum" style="color:var(--teal);font-weight:800">15</span>
+        <span class="rnm"><b>${c.nom}</b> <span>${c.prenom}</span> <span style="color:var(--teal);font-weight:700">(vous)</span></span>
+        ${pill}
+      </div>`;
+    }
     const pid=ch()[c.rang],enCours=cur&&cur.rang===c.rang;
     return `<div class="rrow${enCours?' cur':''}">
       <span class="rnum">${c.rang}</span>
